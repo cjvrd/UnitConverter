@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,12 +34,28 @@ public class MainActivity extends AppCompatActivity {
         convertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //takes input from inputValue EditText
-                double input = Double.parseDouble(inputValue.getText().toString());
-                //puts input into conversion functions depending on selection form spinners
-                result = Double.toString(convertLength(input, sourceUnit.getSelectedItem().toString(), destinationUnit.getSelectedItem().toString()));
-                //sets resultOutput TextView to the result
-                resultOutput.setText(result);
+                //error handling for no input entered
+                // Check if inputValue EditText is empty
+                if (inputValue.getText().toString().isEmpty()) {
+                    // Show error message
+                    Toast.makeText(getApplicationContext(), "Please enter a value", Toast.LENGTH_SHORT).show();
+                    return; // Exit the method as there's nothing to process
+                }
+
+                // If inputValue is not empty, proceed with conversion
+                try {
+                    //takes input from inputValue EditText
+                    double input = Double.parseDouble(inputValue.getText().toString());
+
+                    //puts input into conversion functions depending on selection from spinners
+                    result = Double.toString(convertLength(input, sourceUnit.getSelectedItem().toString(), destinationUnit.getSelectedItem().toString()));
+
+                    //sets resultOutput TextView to the result
+                    resultOutput.setText(result);
+                } catch (NumberFormatException e) {
+                    // Handle the case where the input cannot be parsed as a double
+                    Toast.makeText(getApplicationContext(), "Invalid input format", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
